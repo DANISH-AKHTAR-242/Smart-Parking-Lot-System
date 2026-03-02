@@ -1,0 +1,111 @@
+# ========================
+# Dependencies
+# ========================
+node_modules/
+.pnp
+.pnp.js
+
+# ========================
+# Build Output
+# ========================
+dist/
+build/
+out/
+
+# ========================
+# Environment Variables
+# ========================
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# ========================
+# TypeScript
+# ========================
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ========================
+# Drizzle ORM
+# ========================
+drizzle/
+*.sql
+*.snapshot
+
+# ========================
+# Logs
+# ========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ========================
+# Test Coverage
+# ========================
+coverage/
+.nyc_output/
+*.lcov
+
+# ========================
+# Vitest
+# ========================
+.vitest-cache/
+
+# ========================
+# Package Manager Locks
+# (keep only one — remove if you want to commit lock files)
+# ========================
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# ========================
+# OS Files
+# ========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ========================
+# Editor / IDE
+# ========================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+*~
+
+# ========================
+# Redis
+# ========================
+dump.rdb
+*.rdb
+appendonly.aof
+
+# ========================
+# Miscellaneous
+# ========================
+.cache/
+.temp/
+.tmp/
+tmp/
+temp/

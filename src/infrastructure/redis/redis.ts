@@ -1,0 +1,22 @@
+import "dotenv/config";
+import Redis from "ioredis";
+
+export const redis = new Redis(
+  process.env.REDIS_URL ?? "redis://localhost:6379",
+  {
+    lazyConnect: true,
+    maxRetriesPerRequest: 3,
+  },
+);
+
+redis.on("error", (err) => {
+  console.error("[Redis] Connection error:", err);
+});
+
+redis.on("connect", () => {
+  console.log("[Redis] Connected");
+});
+
+export const REDIS_KEYS = {
+  available: (vehicleType: string) => `available:${vehicleType}`,
+};
