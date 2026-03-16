@@ -7,7 +7,9 @@ import {
   numeric,
   pgEnum,
   index,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 export const vehicleTypeEnum = pgEnum("vehicle_type", [
   "MOTORCYCLE",
@@ -63,6 +65,9 @@ export const parkingSessions = pgTable(
       table.vehicleNumber,
       table.status,
     ),
+    uniqueActiveVehicleIdx: uniqueIndex("idx_unique_active_vehicle")
+      .on(table.vehicleNumber)
+      .where(sql`status = 'ACTIVE'`),
   }),
 );
 

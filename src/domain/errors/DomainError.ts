@@ -38,3 +38,19 @@ export class VehicleAlreadyParkedError extends DomainError {
     );
   }
 }
+
+export class SpotOccupiedError extends DomainError {
+  constructor(spotId: string) {
+    super(
+      `Spot ${spotId} is currently occupied and cannot be modified`,
+      "SPOT_OCCUPIED",
+      409,
+    );
+  }
+}
+
+export class InvalidFeeCalculationError extends DomainError {
+  constructor(message: string) {
+    super(message, "INVALID_FEE_CALCULATION", 400);
+  }
+}
