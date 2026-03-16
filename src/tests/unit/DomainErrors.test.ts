@@ -5,6 +5,7 @@ import {
   SessionNotFoundError,
   VehicleAlreadyParkedError,
   SpotOccupiedError,
+  SpotNotFoundError,
   InvalidFeeCalculationError,
 } from "../../domain/errors/DomainError";
 
@@ -46,6 +47,16 @@ describe("DomainError classes", () => {
       expect(error.statusCode).toBe(409);
       expect(error.message).toContain("spot-123");
       expect(error.message).toContain("occupied");
+      expect(error).toBeInstanceOf(DomainError);
+    });
+  });
+
+  describe("SpotNotFoundError", () => {
+    it("should have correct code and status", () => {
+      const error = new SpotNotFoundError("spot-456");
+      expect(error.code).toBe("SPOT_NOT_FOUND");
+      expect(error.statusCode).toBe(404);
+      expect(error.message).toContain("spot-456");
       expect(error).toBeInstanceOf(DomainError);
     });
   });

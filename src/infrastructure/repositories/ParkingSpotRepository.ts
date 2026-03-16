@@ -2,7 +2,7 @@ import { sql, eq, and } from "drizzle-orm";
 import { db } from "../db/db";
 import { parkingSpots } from "../db/schema";
 import { ParkingSpot, VehicleType } from "../../domain/entities/ParkingSpot";
-import { ParkingFullError, SpotOccupiedError, DomainError } from "../../domain/errors/DomainError";
+import { ParkingFullError, SpotOccupiedError, SpotNotFoundError } from "../../domain/errors/DomainError";
 
 type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
@@ -88,7 +88,7 @@ export async function updateSpotStatus(
       .limit(1);
 
     if (existing.length === 0) {
-      throw new DomainError(`Spot ${spotId} not found`, "SPOT_NOT_FOUND", 404);
+      throw new SpotNotFoundError(spotId);
     }
 
     if (existing[0].status === "OCCUPIED") {

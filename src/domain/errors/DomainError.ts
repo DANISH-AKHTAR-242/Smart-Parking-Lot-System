@@ -49,6 +49,12 @@ export class SpotOccupiedError extends DomainError {
   }
 }
 
+export class SpotNotFoundError extends DomainError {
+  constructor(spotId: string) {
+    super(`Spot ${spotId} not found`, "SPOT_NOT_FOUND", 404);
+  }
+}
+
 export class InvalidFeeCalculationError extends DomainError {
   constructor(message: string) {
     super(message, "INVALID_FEE_CALCULATION", 400);
