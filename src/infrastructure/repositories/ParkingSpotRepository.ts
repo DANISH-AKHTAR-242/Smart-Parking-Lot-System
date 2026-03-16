@@ -1,8 +1,8 @@
-import { sql, eq } from "drizzle-orm";
+import { sql, eq, and } from "drizzle-orm";
 import { db } from "../db/db";
 import { parkingSpots } from "../db/schema";
 import { ParkingSpot, VehicleType } from "../../domain/entities/ParkingSpot";
-import { ParkingFullError } from "../../domain/errors/DomainError";
+import { ParkingFullError, SpotOccupiedError, SpotNotFoundError } from "../../domain/errors/DomainError";
 
 type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
@@ -66,10 +66,35 @@ export async function updateSpotStatus(
   spotId: string,
   status: "AVAILABLE" | "OCCUPIED" | "MAINTENANCE",
 ): Promise<void> {
-  await db
+  // Only allow transitions from non-OCCUPIED states.
+  // OCCUPIED spots must be freed through the normal exit flow.
+  const result = await db
     .update(parkingSpots)
     .set({ status })
-    .where(eq(parkingSpots.id, spotId));
+    .where(
+      and(
+        eq(parkingSpots.id, spotId),
+        sql`${parkingSpots.status} != 'OCCUPIED'`,
+      ),
+    )
+    .returning({ id: parkingSpots.id });
+
+  if (result.length === 0) {
+    // Determine whether the spot doesn't exist or is occupied
+    const existing = await db
+      .select({ status: parkingSpots.status })
+      .from(parkingSpots)
+      .where(eq(parkingSpots.id, spotId))
+      .limit(1);
+
+    if (existing.length === 0) {
+      throw new SpotNotFoundError(spotId);
+    }
+
+    if (existing[0].status === "OCCUPIED") {
+      throw new SpotOccupiedError(spotId);
+    }
+  }
 }
 
 export async function getOccupancyByFloor(): Promise<

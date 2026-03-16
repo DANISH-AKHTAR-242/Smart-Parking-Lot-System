@@ -1,4 +1,4 @@
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import { db } from "../db/db";
 import { parkingSessions } from "../db/schema";
 import {
@@ -70,11 +70,24 @@ export async function checkNoActiveSession(
         eq(parkingSessions.status, "ACTIVE"),
       ),
     )
+    .for("update")
     .limit(1);
 
   if (rows.length > 0) {
     throw new VehicleAlreadyParkedError(vehicleNumber);
   }
+}
+
+/**
+ * Acquires a transaction-scoped advisory lock based on the vehicle number.
+ * This serializes concurrent entry requests for the same vehicle,
+ * preventing duplicate active sessions even when no existing row exists to lock.
+ */
+export async function acquireVehicleLock(
+  tx: Transaction,
+  vehicleNumber: string,
+): Promise<void> {
+  await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${vehicleNumber}))`);
 }
 
 export async function completeSession(
